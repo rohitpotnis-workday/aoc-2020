@@ -15,8 +15,7 @@ public class Prog20204 {
 
     public static void main(String args[])
         throws IOException {
-        Path path = Path.of("/Users/rohit.potnis/Downloads/northpole.txt");
-        long valid = Arrays.stream(Files.readString(path).split("\n\n+"))
+        long valid = Arrays.stream(Files.readString(Path.of("20204")).split("\n\n+"))
             .filter(passport -> {
                 //passport entry
                 Set<String> fields = Arrays.stream(passport.replace("\n", " ").split(" "))
@@ -27,8 +26,9 @@ public class Prog20204 {
                     .filter(keyval -> !keyval.contains("hcl:") || keyval.matches("hcl:#[0-9,a-f]{6}"))
                     .filter(keyval -> !keyval.contains("ecl:") || keyval.matches("ecl:(amb|blu|brn|gry|grn|hzl|oth)"))
                     .filter(keyval -> !keyval.contains("pid:") || keyval.matches("pid:[0-9]{9}"))
+                    .map(keyVal->keyVal.split(":")[0])
                     .collect(Collectors.toSet());
-                return fields.size() == 8 || (fields.size() == 7 && fields.stream().filter(item->item.contains("cid")).count()==0);
+                return fields.size() == 8 || (fields.size() == 7 && !fields.contains("cid"));
             }).count();
         System.out.println(valid);
 
