@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * https://adventofcode.com/2020/leaderboard/day/3
+ * https://adventofcode.com/2020/day/3
  *
  * @author rohitpotnis-workday
  */

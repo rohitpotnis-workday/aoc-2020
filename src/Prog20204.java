@@ -3,7 +3,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Set;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -15,21 +14,12 @@ public class Prog20204 {
 
     public static void main(String args[])
         throws IOException {
-        long valid = Arrays.stream(Files.readString(Path.of("20204")).split("\n\n+"))
-            .filter(passport -> {
-                //passport entry
-                Set<String> fields = Arrays.stream(passport.replace("\n", " ").split(" "))
-                    .filter(keyval -> !keyval.contains("byr:") || keyval.matches("^(byr:19[2-9][0-9])$|^(byr:200[0-2])$"))
-                    .filter(keyval -> !keyval.contains("iyr:") || keyval.matches("^(iyr:20(1[0-9]|20))$"))
-                    .filter(keyval -> !keyval.contains("eyr:") || keyval.matches("^(eyr:20(2[0-9]|30))$"))
-                    .filter(keyval -> !keyval.contains("hgt:") || keyval.matches("hgt:((1([5-8][0-9]|9[0-3])cm)|(59|6[0-9]|7[0-6])in)"))
-                    .filter(keyval -> !keyval.contains("hcl:") || keyval.matches("hcl:#[0-9,a-f]{6}"))
-                    .filter(keyval -> !keyval.contains("ecl:") || keyval.matches("ecl:(amb|blu|brn|gry|grn|hzl|oth)"))
-                    .filter(keyval -> !keyval.contains("pid:") || keyval.matches("pid:[0-9]{9}"))
-                    .map(keyVal->keyVal.split(":")[0])
-                    .collect(Collectors.toSet());
-                return fields.size() == 8 || (fields.size() == 7 && !fields.contains("cid"));
-            }).count();
+        String path = "/Users/rohit.potnis/Downloads/20204_input.txt";
+        long valid = Arrays.stream(Files.readString(Path.of(path)).split("\n\n+")).filter(pass -> {Set<String> f = Arrays.stream(pass.replaceAll("\n", " ").split(" "))
+//            .filter(kv ->(kv.matches("(^(byr:19[2-9][0-9])$|^(byr:200[0-2])$)|(^(iyr:20(1[0-9]|20))$)|(^(eyr:20(2[0-9]|30))$)|(^hgt:((1([5-8][0-9]|9[0-3])cm)|(59|6[0-9]|7[0-6])in)$)|(^hcl:#[0-9,a-f]{6}$)|(^ecl:(amb|blu|brn|gry|grn|hzl|oth)$)|(^pid:[0-9]{9}$)")))
+            .map(kv -> kv.split(":")[0]).collect(Collectors.toSet());
+        return f.size() == 8 || (f.size() == 7 && !f.contains("cid"));
+        }).count();
         System.out.println(valid);
 
     }

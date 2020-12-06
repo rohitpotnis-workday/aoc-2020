@@ -2,6 +2,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+/**
+ * https://adventofcode.com/2020/day/2
+ */
 public class Prog20202 {
 
     public static void main(String args[])
