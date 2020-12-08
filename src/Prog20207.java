@@ -21,33 +21,24 @@ public class Prog20207 {
         throws IOException {
         String path = "/Users/rohit.potnis/Downloads/20207";
         Map<String, Bag> bags = new HashMap<>();
-        Arrays.stream(Files.readString(Path.of(path))
-            .split("\n"))
+        Arrays.stream(Files.readString(Path.of(path)).split("\n"))
             .forEach(rule -> {
-
                 String[] tokens = rule.split(" bags contain ");
                 String color = tokens[0];
-                String[] containStr = tokens[1].split("bag[s]*[,|.]");
-                containStr = Arrays.stream(containStr).map(str -> str.trim()).toArray(String[]::new);
-                if (!bags.containsKey(color)) {
-                    bags.put(color, new Bag(color));
-                }
+                Set<String> containStr = Arrays.stream(tokens[1].split("bag[s]*[,|.]")).map(str -> str.trim()).collect(Collectors.toSet());
+                bags.putIfAbsent(color, new Bag(color));
                 Bag topBag = bags.get(color);
-
-                Arrays.stream(containStr).filter(str -> !str.equalsIgnoreCase("no other")).collect(Collectors.toSet()).forEach(colorQty -> {
+                containStr.stream().filter(str -> !str.equalsIgnoreCase("no other"))
+                    .collect(Collectors.toSet()).forEach(colorQty -> {
                     String[] cqTokens = colorQty.split(" ");
                     String cqColor = Arrays.stream(Arrays.copyOfRange(cqTokens, 1, cqTokens.length)).collect(Collectors.joining(" "));
-                    if (!bags.containsKey(cqColor)) {
-                        bags.put(cqColor, new Bag(cqColor));
-                    }
                     int cqQty = Integer.parseInt(cqTokens[0]);
-                    if (cqQty > 0 && !topBag.containedBags.containsKey(cqColor)) {
-                        topBag.add(bags.get(cqColor), cqQty);
-                    }
+                    bags.putIfAbsent(cqColor, new Bag(cqColor));
+                    topBag.containedBags.putIfAbsent(bags.get(cqColor), cqQty);
                 });
-                return;
             });
-        bags.values().stream().forEach(bag -> bag.prepareFlatMap());
+
+        bags.values().stream().forEach(Bag::prepareFlatMap);
 
         long count = bags.values().stream().filter(bag -> !bag.color.equalsIgnoreCase("other") && bag.contains(bags.get(BAG_COLOR))).count();
         System.out.println("Part A: " + count);
@@ -65,11 +56,6 @@ public class Prog20207 {
 
         public Bag(String color) {
             this.color = color;
-        }
-
-        public void add(Bag bag, int qty) {
-            this.containedBags.put(bag, qty);
-            this.flatSet.add(bag);
         }
 
         public int getNumSubBags() {
